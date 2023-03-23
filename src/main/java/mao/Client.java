@@ -92,9 +92,17 @@ public class Client
             @Override
             public void operationComplete(Future<? super Void> future) throws Exception
             {
-                log.debug("服务器连接成功");
-                channel.writeAndFlush("hello");
-                thread.start();
+                boolean success = future.isSuccess();
+                if (!success)
+                {
+                    Throwable throwable = future.cause();
+                    log.error("错误：" + throwable.getMessage());
+                }
+                else
+                {
+                    log.debug("服务器连接成功");
+                    thread.start();
+                }
             }
         });
 
